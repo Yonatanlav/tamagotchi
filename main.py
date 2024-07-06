@@ -98,7 +98,8 @@ def medicine():
 
 
 def gameOver():
-    if action['satiety'] <= 0 or action['toilet'] <= 0 or action['happy'] <= 0 or action['health'] <= 0:
+    # if action['satiety'] <= 0 or action['toilet'] <= 0 or action['happy'] <= 0 or action['health'] <= 0:
+    if action['satiety'] <= 0:
         pygame.mixer.music.stop()
         screen.blit(gameover_img, (0, 0))
         screen.blit(gameover_text, (35, 450))
@@ -117,18 +118,23 @@ start_btn = Button(140, 150, 200, 50, abs_path('images/sprites/buttonLong_brown.
 rule_btn = Button(140, 250, 200, 50, abs_path('images/sprites/buttonLong_brown.png'), 'Help')
 exit_btn = Button(140, 350, 200, 50, abs_path('images/sprites/buttonLong_brown.png'), 'Exit')
 
+# info_satiety = Button(20, 30, 25, 50, abs_path('images/sprites/lightning.png'))
+# info_toilet = Button(150, 30, 50, 50, abs_path('images/sprites/toilet.png'))
+# info_happy = Button(270, 30, 50, 50, abs_path('images/sprites/smile.png'))
+# info_health = Button(30, 90, 60, 60, abs_path('images/sprites/health.png'))
 
-info_satiety = Button(20, 30, 25, 50, abs_path('images/sprites/lightning.png'))
-info_toilet = Button(150, 30, 50, 50, abs_path('images/sprites/toilet.png'))
-info_happy = Button(270, 30, 50, 50, abs_path('images/sprites/smile.png'))
-info_health = Button(30, 90, 60, 60, abs_path('images/sprites/health.png'))
+# info_satiety = health
+info_satiety = Button(30, 30, 60, 60, abs_path('images/sprites/health.png'))
 
 btn_statistic = Button(715, 40, 150, 50, abs_path('images/sprites/buttonLong_brown.png'), 'Statistic')
 
-btn_satiety = Button(85, 467, 150, 50, abs_path('images/sprites/buttonLong_brown.png'), 'Feed')
-btn_toilet = Button(285, 467, 150, 50, abs_path('images/sprites/buttonLong_brown.png'), 'Clear')
-btn_play = Button(515, 467, 150, 50, abs_path('images/sprites/buttonLong_brown.png'), 'Play')
-btn_health = Button(715, 467, 150, 50, abs_path('images/sprites/buttonLong_brown.png'), 'Medicine')
+# btn_satiety = Button(85, 467, 150, 50, abs_path('images/sprites/buttonLong_brown.png'), 'Feed')
+# btn_toilet = Button(285, 467, 150, 50, abs_path('images/sprites/buttonLong_brown.png'), 'Clear')
+# btn_play = Button(515, 467, 150, 50, abs_path('images/sprites/buttonLong_brown.png'), 'Play')
+# btn_health = Button(715, 467, 150, 50, abs_path('images/sprites/buttonLong_brown.png'), 'Medicine')
+
+# btn_satiety = food & restore LG to 100
+btn_satiety = Button(410, 467, 150, 50, abs_path('images/sprites/buttonLong_brown.png'), 'Feed')
 
 food = foodClass.FoodMenu(400, 250, 750, 450, abs_path('images/sprites/panel_brown.png'),
                           abs_path('images/sprites/buttonSquare_beige_pressed.png'),
@@ -153,16 +159,7 @@ def game():
         screen.blit(background, (0, 0))
         info_satiety.blit_btn()
         satiety_text = pixel_font.render(str(action['satiety']), False, (255, 255, 255))
-        screen.blit(satiety_text, (40, 15))
-        info_toilet.blit_btn()
-        toilet_text = pixel_font.render(str(action['toilet']), False, (255, 255, 255))
-        screen.blit(toilet_text, (180, 15))
-        info_happy.blit_btn()
-        smile_text = pixel_font.render(str(action['happy']), False, (255, 255, 255))
-        screen.blit(smile_text, (300, 15))
-        health_text = pixel_font.render(str(action['health']), False, (255, 255, 255))
-        screen.blit(health_text, (70, 75))
-        info_health.blit_btn()
+        screen.blit(satiety_text, (70, 15))
 
         tamagotchiAnimation(330, 340)
 
@@ -170,9 +167,6 @@ def game():
         statistics = statisticsClass.Statistics(400, 250, 750, 450, abs_path('images/sprites/panel_brown.png'),
                                                 str(action['logiki']) + ' Lg', 'Name: Tamagotchi', f'Days: {daysCount}')
         btn_satiety.blit_btn()
-        btn_toilet.blit_btn()
-        btn_play.blit_btn()
-        btn_health.blit_btn()
 
         pos_x, pos_y = pygame.mouse.get_pos()
         for event in pygame.event.get():
@@ -187,24 +181,10 @@ def game():
                     button_sound.play()
                 if btn_satiety.rect.collidepoint((pos_x, pos_y)) and event.type == pygame.MOUSEBUTTONDOWN:
                     foodClass.clicked_feed = True
+                    action['logiki'] = 100
                     button_sound.play()
                 if action['logiki'] >= 0:
                     food.pressed(pos_x, pos_y, event)
-                if btn_toilet.rect.collidepoint((pos_x, pos_y)) and event.type == pygame.MOUSEBUTTONDOWN:
-                    clearAfter()
-                if btn_play.rect.collidepoint((pos_x, pos_y)) and event.type == pygame.MOUSEBUTTONDOWN:
-                    game_time = time.time()
-                    playClass.clicked_play = True
-                    button_sound.play()
-                    pygame.mixer.music.unload()
-                    pygame.mixer.music.load(abs_path('sounds/game.ogg'))
-                    pygame.mixer.music.set_volume(0.7)
-                    pygame.mixer.music.play()
-                if event.type == pygame.USEREVENT:
-                    if playClass.clicked_play:
-                        spawn_coin(coins)
-                if btn_health.rect.collidepoint((pos_x, pos_y)) and event.type == pygame.MOUSEBUTTONDOWN:
-                    medicine()
             if statistics.exit_rect.collidepoint((pos_x, pos_y)) and event.type == pygame.MOUSEBUTTONDOWN:
                 statisticsClass.clicked_statistics = False
                 button_sound.play()
@@ -223,9 +203,6 @@ def game():
 
         btn_statistic.hover(pos_x, pos_y)
         btn_satiety.hover(pos_x, pos_y)
-        btn_toilet.hover(pos_x, pos_y)
-        btn_play.hover(pos_x, pos_y)
-        btn_health.hover(pos_x, pos_y)
 
         if isSleep:
             screen.blit(night_image, (735, 70))
