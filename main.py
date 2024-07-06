@@ -68,7 +68,7 @@ def scoreTick():
     global start_time, timeout
     t_time = time.time() - start_time
     if t_time > timeout:
-        action['satiety'] -= 3
+        action['satiety'] -= 0.1
         action['toilet'] -= 2
         action['happy'] -= 3
         action['health'] -= random.randint(0, 5)
@@ -158,7 +158,7 @@ def game():
     while not endGame:
         screen.blit(background, (0, 0))
         info_satiety.blit_btn()
-        satiety_text = pixel_font.render(str(action['satiety']), False, (255, 255, 255))
+        satiety_text = pixel_font.render(str("%.1f" % action['satiety']), False, (255, 255, 255))
         screen.blit(satiety_text, (70, 15))
 
         tamagotchiAnimation(330, 340)
